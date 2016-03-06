@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.travelport.apf</groupId>
+    <artifactId>apf-master</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>apf-data-access</module>
+        <module>apf-domain</module>
+        <module>apf-web-spring-mvc</module>
+        <module>apf-web-jsf</module>
+    </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <name>apf-master</name>
+    <dependencyManagement> 
+        <dependencies>
+            <dependency>
+                <groupId>ibm</groupId>
+                <artifactId>db2jcc4</artifactId>
+                <version>v10.5fp1</version>
+            </dependency>
+            <dependency>
+                <groupId>ibm</groupId>
+                <artifactId>db2jcc</artifactId>
+                <version>v10.5fp1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
