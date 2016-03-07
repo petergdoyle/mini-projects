@@ -18,7 +18,7 @@ public class Connect {
         if (args.length > 0) {
             databaseURL = args[0];
         } else {
-            databaseURL = "jdbc:db2://localhost:50001/sample";
+            databaseURL = "jdbc:db2://localhost:50000/sample";
         }
         try {
             // Load DB2 Driver for JDBC class
