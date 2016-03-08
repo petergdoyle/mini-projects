@@ -23,12 +23,14 @@ Vagrant.configure(2) do |config|
 #export HTTP_PROXY=http://myproxy.net:80
 #export HTTPS_PROXY=$HTTP_PROXY http_proxy=$HTTP_PROXY https_proxy=$HTTP_PROXY
 #echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
+#global settings
 #cat >/etc/profile.d/proxy.sh <<-EOF
 #export HTTP_PROXY=$HTTP_PROXY
 #export HTTPS_PROXY=$HTTP_PROXY
 #export http_proxy=$HTTP_PROXY
 #export https_proxy=$HTTP_PROXY
 #EOF
+# personal settings (not required)
 #cat >~/.bash_profile <<-EOF
 #export HTTP_PROXY=$HTTP_PROXY
 #export HTTPS_PROXY=$HTTP_PROXY
@@ -119,6 +121,32 @@ export MAVEN_HOME=/usr/maven/default
 cat >/etc/profile.d/maven.sh <<-EOF
 export MAVEN_HOME=$MAVEN_HOME
 EOF
+
+#maven needs a proxy as well, if behind proxy-server
+sed -i "/<proxies>/a <proxy> \
+  <id>optional</id> \
+  <active>true</active> \
+  <protocol>http</protocol> \
+  <username>proxyuser</username> \
+  <password>proxypass</password> \
+  <host>proxy.host.net</host> \
+  <port>80</port> \
+  <nonProxyHosts>local.net|some.host.com</nonProxyHosts> \
+</proxy>" /usr/maven/default/conf/settings.xml
+
+#maven needs a proxy as well, if behind proxy-server
+#cat >>/usr/maven/default/conf/settings.xml <<-EOF
+#<proxies>
+#  <proxy>
+#    <id>optional</id>
+#    <active>true</active>
+#    <protocol>http</protocol>
+#    <host>http://myproxy.net</host>
+#    <port>8080</port>
+#    <nonProxyHosts>localhost</nonProxyHosts>
+#  </proxy>
+#</proxies>
+#EOF
 
     else
       echo -e "\e[7;40;92mmaven already appears to be installed. skipping.\e[0m"

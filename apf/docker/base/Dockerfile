@@ -1,6 +1,12 @@
 FROM centos:7
 
 #
+# set the proxy if required
+#
+#COPY set_proxy.sh /set_proxy.sh
+#RUN ./set_proxy.sh
+
+#
 # enable epel repo
 #
 RUN yum -y install epel-release
