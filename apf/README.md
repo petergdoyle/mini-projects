@@ -186,3 +186,49 @@ connection to sample db2 database [jdbc:db2://127.0.0.1:50000/sample] successful
 connection to sample db2 database [jdbc:db2://0.0.0.0:50000/sample] successful!
 /vagrant/docker/db2client
 ```
+
+Now switch out the host machine (if you are running on top of a Vagrant managed vm) and the db2 connection from the host. You should see the same thing.
+```bash
+/Users/peter/vagrant/mini-projects/apf/docker/db2client
+Peters-iMac:db2client peter$ ./test_db2client.sh
+connection to sample db2 database [jdbc:db2://localhost:50000/sample] successful!
+/Users/peter/vagrant/mini-projects/apf/docker/db2client
+```
+####Squirrel SQL
+
+#####Install Squirrel SQL
+http://squirrel-sql.sourceforge.net/#installation 
+
+#####Configure Squirrel SQL
+Now on the host machine (not the Vagrant managed vm, but one level up) and then install Squirrel SQL to connect to the database.
+
+	Configure Squirrel SQL to connect to IBM DB2
+	"Squirrel SQL" is a great light weight generic SQL client that I have started using for more than 7 years now.
+
+	This is how to configure Squirrel SQL 3.3.0 to connect to DB2 server, I have installed IBM DB2 admin client 9.7 - 64 bit software on my Windows 7 enterprise SP1. You will find two types of DB2 drivers APP & NET, most recommended way is to use type 4 JDBC driver (thin) that actually doesn't require client installation, but require proper jar files and associated license.
+
+	Steps:
+	1- Open Driver list from left menu, click the plus sign "Create a New Driver".
+	2- Type "IBM DB2 Universal Driver" in "Name" textbox.
+	3- Type "jdbc:db2://localhost:50000/sample" in "Example URL" textbox.
+	4- Type "com.ibm.db2.jcc.DB2Driver" in "Class Name" editable dropdown list.
+	5- Click "Extra Class Path" tab.
+	6- Click "Add" and select two jar files from %DB2_INSTALL%\java\db2jcc.jar & %DB2_INSTALL%\java\db2jcc_license_cu.jar
+	7- Click Ok, and we are done defining the driver.
+	8- Now create an alias for the DB using previous driver and providing URL, username, & password.
+
+Now you should be able to connect using the gui based Squirrel SQL
+So after you configure the Driver, then add an Alias and connect to the container-ized db2 instance.
+![add alias](img/add_alias.png)
+
+Then test that with the test button the username/password we set (in the create_db script) is db2inst1/magic_mike, so try that out and you should see a success icon pop up
+![test alias](img/test_alias.png)
+
+
+![connection success](img/connection_success.png)
+
+Now if you save that Alias and drill down into the db2-sample-db/DB2INST1/TABLE/CUSTOMER table you should see some data that we loaded into the sample database
+
+
+![view customer table](img/view_customer_table.png)
+
