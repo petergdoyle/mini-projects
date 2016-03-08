@@ -1,1 +1,172 @@
-# mini-projects
+#APF Up and Running - Setup
+
+##Project Overview
+The project is organized into several sections. Since the mini-projects is a multi project repository, the descriptions and instructions here assume that you are in the *mini-project-dir*/apf directory. So references in this document to file/folder locations assume that *mini-project-dir*/apf is the current working directory. 
+
+	.
+    ├── README.md
+    ├── Vagrantfile
+    ├── apf-master
+    │   ├── Dockerfile
+    │   ├── apf-data-access
+    │   ├── apf-services
+    │   ├── apf-web-jsf
+    │   ├── apf-web-spring-mvc
+    │   ├── clean_and_build.sh
+    │   ├── conf
+    │   ├── docker_build.sh
+    │   ├── docker_run.sh
+    │   ├── lib
+    │   └── pom.xml
+    ├── docker
+    │   ├── base
+    │   ├── db2client
+    │   ├── db2express
+    │   ├── jdk8
+    │   ├── jenkins
+    │   └── tomcat8
+    ├── docker_build_all.sh
+    ├── docker_clean_all.sh
+    ├── docker_remove_all_containers.sh
+    ├── docker_remove_all_images.sh
+    ├── docker_start_all_containers.sh
+    ├── docker_stop_all_containers.sh
+    ├── ibm
+    │   ├── drivers
+    │   ├── mvn_install_db2-express-c_jdbc_drivers.sh
+    │   └── mvn_remove_db2-express-c_jdbc_drivers.sh
+    └── scripts
+        ├── color_and_format_functions.sh
+        └── docker_functions.sh
+
+
+###Steps
+#####Build the base images
+In the root directory there are a number of scripts to run to build the Docker images. These can be all built at once in the correct order by running the docker_build_all shell script from the apf/ directory.
+```bash
+$ ./docker_build_all.sh
+```
+If the containers were built successfully you should see messages like the following:
+
+	the docker build for ./docker/db2express built successfully
+    
+Check that the Docker images are built by typing the Docker command to list them:
+```bash
+[vagrant@apfvm db2express]$ docker images
+REPOSITORY                      TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+apf/db2client                   latest              33776b83635b        11 minutes ago      956 MB
+apf/tomcat8                     latest              f23fd9a3378f        16 minutes ago      961.5 MB
+apf/jenkins                     latest              2a80414f9f8e        16 minutes ago      950.1 MB
+apf/jdk8                        latest              d88c8e2882e5        17 minutes ago      948.5 MB
+apf/base                        latest              bc7b6e238bc4        18 minutes ago      402.4 MB
+apf/db2express                  latest              d2b5ec0e260c        34 minutes ago      1.851 GB
+docker.io/centos                7                   bb3d629a7cbc        3 days ago          196.6 MB
+docker.io/ibmcom/db2express-c   latest              3673a5923f7f        9 months ago        1.705 GB
+
+```
+You should see the required images for this project with the ```apf/``` namespace. Make sure everything built succesfully before proceeding.
+
+#####Set up the db2 database
+Move into the ```docker/db2express``` directory and list the contents
+```bash
+[vagrant@apfvm vagrant]$ cd docker/db2express/
+[vagrant@apfvm db2express]$ ll
+total 28
+-rwxr-xr-x. 1 vagrant vagrant   76 Mar  6 16:46 create_sample_db.sh
+-rwxr-xr-x. 1 vagrant vagrant  153 Mar  6 16:46 docker_build.sh
+-rwxr-xr-x. 1 vagrant vagrant   79 Mar  6 16:46 docker_destroy.sh
+-rw-r--r--. 1 vagrant vagrant  215 Mar  6 16:46 Dockerfile
+-rwxr-xr-x. 1 vagrant vagrant  359 Mar  6 16:46 docker_run.sh
+-rwxr-xr-x. 1 vagrant vagrant   58 Mar  6 16:46 docker_shell.sh
+-rwxr-xr-x. 1 vagrant vagrant 1493 Mar  6 16:46 entrypoint.sh
+```
+Now that the Docker images are built we can then run a db2 container. So now we need to run a container by running the docker_run script. 
+```bash
+[vagrant@apfvm db2express]$ ./docker_run.sh 
+ed5e534efb1ea0347064e2a2b3146054f2352bacf8b506e41e466e03f2e4fb05
+```
+Okay, now let's check on the container. You can see running containers with the ```docker ps``` command. So let's check the status of the container we just created. It was named ```apf_db2express_server``` by the docker_run script. 
+```bash
+[vagrant@apfvm db2express]$ docker ps -a
+CONTAINER ID        IMAGE                   COMMAND                  CREATED              STATUS              PORTS                              NAMES
+ed5e534efb1e        apf/db2express:latest   "/entrypoint.sh db2st"   About a minute ago   Up About a minute   0.0.0.0:50000->50000/tcp, 22/tcp   apf_db2express_server
+```
+Now, let's create the db2sampl database so we can check connectivity between the container and the docker machine. We need to run the script that executes a directive in the container to create the db2 sample database. So run the create_sample_db and you should see the following:
+```bash
+[vagrant@apfvm db2express]$ ./create_sample_db.sh 
+
+  Creating database "SAMPLE"...
+  Connecting to database "SAMPLE"...
+  Creating tables and data in schema "DB2INST1"...
+  Creating tables with XML columns and XML data in schema "DB2INST1"...
+
+  'db2sampl' processing complete.
+
+```
+
+So now let's switch to the db2client folder and see what is in there. This contains a program that will test the db2 database installation and look for the sample db database. 
+```bash
+[vagrant@apfvm db2express]$ cd ../db2client/
+[vagrant@apfvm db2client]$ ll
+total 20
+-rwxr-xr-x. 1 vagrant vagrant 190 Mar  6 16:46 clean_and_build.sh
+drwxr-xr-x. 1 vagrant vagrant 170 Mar  8 09:15 db2client
+-rwxr-xr-x. 1 vagrant vagrant 173 Mar  6 16:46 docker_build.sh
+-rw-r--r--. 1 vagrant vagrant 196 Mar  6 16:46 Dockerfile
+-rwxr-xr-x. 1 vagrant vagrant 352 Mar  6 16:46 docker_run_client.sh
+-rwxr-xr-x. 1 vagrant vagrant 180 Mar  8 07:46 test_db2client.sh
+```
+
+Okay, now let's run the clean_and_build to build that java program that should connect to the database and indicate that the database is available. We can do this and run the test_db2client script with one command:
+```bash
+[vagrant@apfvm db2client]$ ./clean_and_build.sh && ./test_db2client.sh 
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building db2client 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ db2client ---
+[INFO] Deleting /vagrant/docker/db2client/db2client/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ db2client ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /vagrant/docker/db2client/db2client/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ db2client ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /vagrant/docker/db2client/db2client/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ db2client ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /vagrant/docker/db2client/db2client/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ db2client ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ db2client ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ db2client ---
+[INFO] Building jar: /vagrant/docker/db2client/db2client/target/db2client-1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ db2client ---
+[INFO] Installing /vagrant/docker/db2client/db2client/target/db2client-1.0-SNAPSHOT.jar to /home/vagrant/.m2/repository/com/travelport/apf/db2client/1.0-SNAPSHOT/db2client-1.0-SNAPSHOT.jar
+[INFO] Installing /vagrant/docker/db2client/db2client/pom.xml to /home/vagrant/.m2/repository/com/travelport/apf/db2client/1.0-SNAPSHOT/db2client-1.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:copy-dependencies (default) @ db2client ---
+[INFO] Copying db2jcc-v10.5fp1.jar to /vagrant/docker/db2client/db2client/target/lib/db2jcc-v10.5fp1.jar
+[INFO] Copying db2jcc4-v10.5fp1.jar to /vagrant/docker/db2client/db2client/target/lib/db2jcc4-v10.5fp1.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3.257 s
+[INFO] Finished at: 2016-03-08T09:33:08-05:00
+[INFO] Final Memory: 18M/43M
+[INFO] ------------------------------------------------------------------------
+/vagrant/docker/db2client
+connection to sample db2 database [jdbc:db2://127.0.0.1:50000/sample] successful!
+/vagrant/docker/db2client
+```
+
+Make sure the message ```connection to sample db2 database [jdbc:db2://127.0.0.1:50000/sample] successful!``` is shown.

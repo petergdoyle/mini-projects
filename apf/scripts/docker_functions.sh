@@ -42,7 +42,7 @@ docker_build_all() {
 
   for each in $(find . -type f -name 'Dockerfile' -exec dirname {} \;); do
 
-    if [[ "$each" == './docker/base' || "$each" == './docker/jdk8' ]]; then
+    if [[ "$each" == './docker/base' || "$each" == './docker/jdk8' || "$each" == './apf-master' ]]; then
       continue
     fi
 
