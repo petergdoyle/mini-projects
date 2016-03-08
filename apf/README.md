@@ -45,7 +45,7 @@ The project is organized into several sections. Since the mini-projects is a mul
 
 ###Git Bash (if you are using windows)
 
-Enter these lines into a Git Bash shell. Change the sample http://myproxy.net:80 as required.
+If you are running behind a corporate firewall/proxy enter these lines into a Git Bash shell. Change the sample http://myproxy.net:80 as required.
 
 ```bash
 export HTTP_PROXY=http://myproxy.net:80
@@ -62,7 +62,7 @@ EOF
 
 ###Vagrant (if you are running Docker on a VM)
 
-Comment out these lines in the Vagrantfile and set the proxy host and port. Open up atom or another text editor and modify the section that sets the proxy for the vm. Change the sample http://myproxy.net:80 as required.
+If you are running behind a corporate firewall/proxy comment out these lines in the Vagrantfile and set the proxy host and port. Open up atom or another text editor and modify the section that sets the proxy for the vm. Change the sample http://myproxy.net:80 as required.
 ```
 # Global Proxy Settings
 export HTTP_PROXY=http://myproxy.net:80
