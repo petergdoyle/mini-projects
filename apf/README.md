@@ -200,6 +200,25 @@ connection to sample db2 database [jdbc:db2://localhost:50000/sample] successful
 http://squirrel-sql.sourceforge.net/#installation 
 
 #####Configure Squirrel SQL
+
+When you setup the Driver you will need to provide the db2 jdbc drivers. I created a script to download and store them in the ```ibm/drivers``` folder. You need to point to these when the next step wants you to "add the two jar files" for the db2 driver configuration. 
+
+```bash
+[vagrant@apfvm vagrant]$ cd ibm
+[vagrant@apfvm ibm]$ ll
+total 8
+drwxr-xr-x. 1 vagrant vagrant 136 Mar  8 10:32 drivers
+-rwxr-xr-x. 1 vagrant vagrant 777 Mar  8 09:40 mvn_install_db2-express-c_jdbc_drivers.sh
+-rwxr-xr-x. 1 vagrant vagrant  57 Mar  8 09:39 mvn_remove_db2-express-c_jdbc_drivers.sh
+[vagrant@apfvm ibm]$ ./mvn_install_db2-express-c_jdbc_drivers.sh 
+...
+[vagrant@apfvm ibm]$ ll drivers
+total 7348
+-rw-r--r--. 1 vagrant vagrant 3866524 Mar  8 10:32 db2jcc4.jar
+-rw-r--r--. 1 vagrant vagrant 3656105 Mar  8 10:32 db2jcc.jar
+
+```
+
 Now on the host machine (not the Vagrant managed vm, but one level up) and then install Squirrel SQL to connect to the database.
 
 	Configure Squirrel SQL to connect to IBM DB2
