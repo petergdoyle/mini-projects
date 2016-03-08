@@ -41,6 +41,75 @@ The project is organized into several sections. Since the mini-projects is a mul
         ├── color_and_format_functions.sh
         └── docker_functions.sh
 
+##Proxy Settings
+
+###Git Bash (if you are using windows)
+
+Enter these lines into a Git Bash shell. Change the sample http://myproxy.net:80 as required.
+
+```bash
+export HTTP_PROXY=http://myproxy.net:80
+export HTTPS_PROXY=$HTTP_PROXY 
+export http_proxy=$HTTP_PROXY 
+export https_proxy=$HTTP_PROXY
+cat >~/.bashrc <<-EOF
+export HTTP_PROXY=$HTTP_PROXY
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+EOF
+```
+
+###Vagrant (if you are running Docker on a VM)
+
+Comment out these lines in the Vagrantfile and set the proxy host and port. Open up atom or another text editor and modify the section that sets the proxy for the vm. Change the sample http://myproxy.net:80 as required.
+```
+# Global Proxy Settings
+export HTTP_PROXY=http://myproxy.net:80
+export HTTPS_PROXY=$HTTP_PROXY 
+export http_proxy=$HTTP_PROXY 
+export https_proxy=$HTTP_PROXY
+echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
+#global settings
+cat >/etc/profile.d/proxy.sh <<-EOF
+export HTTP_PROXY=$HTTP_PROXY
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+EOF
+```
+
+###Docker Containers
+If you are running behind a corporate firewall/proxy then you need to provide the details of the proxy to the containers as many utilities to run the containers rely on access to the internet and require the proxy server to connect.
+
+You need to modify the setting in the docker/base set_proxy script
+```bash
+Peters-MacBook-Pro:apf peter$ tree docker/base/
+docker/base/
+├── Dockerfile
+├── docker_build.sh
+└── set_proxy.sh
+```
+open up the set_proxy.sh with atom or another text editor and modify the first entry http://myproxy.net:80 as required. This will set the container up to use the appropriate proxy to access the internet as required. 
+
+```
+#!/bin/sh
+
+# Global Proxy Settings
+export HTTP_PROXY=http://myproxy.net:80
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
+
+# GlobalSettings
+cat >/etc/profile.d/proxy.sh <<-EOF
+export HTTP_PROXY=$HTTP_PROXY
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+EOF
+```
 
 ###Steps
 #####Build the base images
