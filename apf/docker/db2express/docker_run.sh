@@ -13,6 +13,7 @@ docker run \
   -it \
   --name apf_db2express_server \
   -p 0.0.0.0:50000:50000 \
+  -v $PWD/scripts:/scripts \
   -e DB2INST1_PASSWORD=$db2inst1_pwd \
   -e LICENSE=accept   \
   apf/db2express:latest \

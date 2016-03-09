@@ -1,6 +1,77 @@
 
 
-#APF Up and Running - Setup
+#APF Up and Running
+
+##PreRequisite Installation Requirements
+
+Since the project artifacts are based on Docker containers, i**t is required that your workstation have Docker installed.** 
+#####Docker Installation on Linux (direct)
+If you are running a current distribution of Linux that supports docker then follow the instructions for your distribution. For convenience, if you are running CentOS version 7 you can run the following from a bash shell:
+```bash
+#install docker service
+cat >/etc/yum.repos.d/docker.repo <<-EOF
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/7
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+yum -y install docker
+systemctl start docker.service
+systemctl enable docker.service
+
+#allow non-#access to run docker commands for user vagrant
+#if you have problems running docker as the vagrant user on the vm (if you 'vagrant ssh'd in
+#after a 'vagrant up'), then
+#restart the host machine and ssh in again to the vm 'vagrant halt; vagrant up; vagrant ssh'
+groupadd docker
+usermod -aG docker vagrant
+
+#install docker-compose.
+#Compose is a tool for defining and running multi-container applications with Docker.
+yum -y install python-pip
+pip install -U docker-compose
+```
+
+#####Docker Installation on Windows & Mac OSX (and Linux if you don't want to install Docker directly on your host Linux OS)
+You have a choice here to make. Since Docker-Machine installs a lightweight Virtualbox VM with Docker installed in that VM, you can either do that directly by following the instructions at the Docker website (https://docs.docker.com/machine/install-machine/) or you can install a more general purpose Virtualbox VM first and use Vagrant to provision that VM as a Docker-Machine with some additional feature. 
+
+**Option 1:** For the official Docker-Machine installation, follow instructions here https://docs.docker.com/machine/install-machine/ 
+
+**Option 2**: For the more general-purpose VM and control using Vagrant, first follow the installation instructions and links outlined here (https://github.com/petergdoyle/dockerdemo/blob/master/SETUP.md) and install Vagrant and Virtualbox now.
+
+
+- [ ] If you are on Windows it is highly recommended that you install Git for Windows and a modern text/code editor like Atom. Those installation instructions and links are outlined at (https://github.com/petergdoyle/dockerdemo/blob/master/SETUP.md) as well.
+- [ ] If you behind a corporate firewall/proxy then scroll down in this document and read the section on **Proxy Settings** first, make the necessary environment changes first, before you go to the next step (here) after you confirm your bash shell (git bash or otherwise) can connect to the internet. Open a bash shell (git bash for windows, a command shell in OSX or Linux) and run ```curl -i http://www.google.com``` to test that the proxy settings are working. You should get some type of HTTP response code back from google. If you don't then you are going to have to stop here and figure out why not. 
+- [ ] Once Vagrant is installed you need to add a plugin to vagrant that will keep the Virtualbox extensions up to date everytime you create a new Virtualbox VM using vagrant. So with the same bash shell type ```vagrant plugin install vagrant-vbguest```. For more information on that plugin, refer to the project documentation https://github.com/dotless-de/vagrant-vbguest
+- [ ] Clone the mini-projects repository using that same bash shell by issuing the git command to pull a copy of this repository down to your machine ```git clone https://github.com/petergdoyle/mini-projects.git``` and change to the apf directory ```cd mini-projects/apf``` (the contents of the apf directory is shown in the next section **Project Overview**)
+- [ ] If you are behind a corporate firewall/proxy make changes to the Vagrantfile section commented out specifying proxy settings before proceeding. Scroll ahead the section in this document on Proxy Settings and make the appproprate changes in the Vagrantfile. Feel free to use Atom to do that work launching the program and opening the folder where mini-projects/apf is located. That will alow you to make the changes. 
+- [ ] Now you should be able to create the Docker-based VM. So with the same bash shell issue the vagrant command to create a new VM that we will use for this project. Type ```vagrant up``` now and you should see the machine being created from a base image and then provisioned with the necessary tools and software for our purposes here. 
+- [ ] You should have received some type of success message from Vagrant that the VM got set up successfully. If not, it is likely the Proxy Settings. Recheck all that and type ```vagrant provision``` and that should restart the section of instructions in the Vagrantfile that will install the Docker-machine and other utilities and software required to continue.
+- [ ] Once you have a successfully install VM, then restart it. Type the command ```vagrant halt && vagrant up``` to do that. You may see some additional installation steps running to update the Virtualbox Guest Extensions, etc. 
+- [ ] Okay now you should be able to ssh into your VM. Type the command ```vagrant ssh``` and you should find yourself at the bash shell of the VM and see the vagrant user at the apfvm machine
+```bash
+[vagrant@apfvm ~]$
+```
+- [ ] Now test the Docker installation. Use the ```docker ps -a``` command and you should see something like the following:
+```bash
+[vagrant@apfvm ~]$ docker ps -a
+CONTAINER ID        IMAGE                   COMMAND                  CREATED             STATUS              PORTS                              NAMES
+```
+- [ ] Now pull a Docker image to make the installation test complete. You should see Docker go out to Docker Hub and pull the official CentOS 7 image. Use the ```docker pull``` command:
+```bash
+[vagrant@apfvm ~]$ docker pull centos
+...
+...
+```
+- [ ] Once that finishes, you should see the image now pulled to your local repository. Use the ```docker images``` command:
+```bash
+[vagrant@apfvm ~]$  docker images
+REPOSITORY                      TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+docker.io/centos                7                   bb3d629a7cbc        4 days ago          196.6 MB
+```
+
 
 ##Project Overview
 The project is organized into several sections. Since the mini-projects is a multi project repository, the descriptions and instructions here assume that you are in the *mini-project-dir*/apf directory. So references in this document to file/folder locations assume that *mini-project-dir*/apf is the current working directory.
@@ -9,24 +80,24 @@ The project is organized into several sections. Since the mini-projects is a mul
     ├── README.md
     ├── Vagrantfile
     ├── apf-master
-    │   ├── Dockerfile
-    │   ├── apf-data-access
-    │   ├── apf-services
-    │   ├── apf-web-jsf
-    │   ├── apf-web-spring-mvc
-    │   ├── clean_and_build.sh
-    │   ├── conf
-    │   ├── docker_build.sh
-    │   ├── docker_run.sh
-    │   ├── lib
-    │   └── pom.xml
+    │   ├── Dockerfile
+    │   ├── apf-data-access
+    │   ├── apf-services
+    │   ├── apf-web-jsf
+    │   ├── apf-web-spring-mvc
+    │   ├── clean_and_build.sh
+    │   ├── conf
+    │   ├── docker_build.sh
+    │   ├── docker_run.sh
+    │   ├── lib
+    │   └── pom.xml
     ├── docker
-    │   ├── base
-    │   ├── db2client
-    │   ├── db2express
-    │   ├── jdk8
-    │   ├── jenkins
-    │   └── tomcat8
+    │   ├── base
+    │   ├── db2client
+    │   ├── db2express
+    │   ├── jdk8
+    │   ├── jenkins
+    │   └── tomcat8
     ├── docker_build_all.sh
     ├── docker_clean_all.sh
     ├── docker_remove_all_containers.sh
@@ -34,94 +105,26 @@ The project is organized into several sections. Since the mini-projects is a mul
     ├── docker_start_all_containers.sh
     ├── docker_stop_all_containers.sh
     ├── ibm
-    │   ├── drivers
-    │   ├── mvn_install_db2-express-c_jdbc_drivers.sh
-    │   └── mvn_remove_db2-express-c_jdbc_drivers.sh
+    │   ├── drivers
+    │   ├── mvn_install_db2-express-c_jdbc_drivers.sh
+    │   └── mvn_remove_db2-express-c_jdbc_drivers.sh
     └── scripts
         ├── color_and_format_functions.sh
         └── docker_functions.sh
 
-##Proxy Settings
 
-###Git Bash (if you are using windows)
 
-If you are running behind a corporate firewall/proxy enter these lines into a Git Bash shell. Change the sample http://myproxy.net:80 as required.
-
-```bash
-export HTTP_PROXY=http://myproxy.net:80
-export HTTPS_PROXY=$HTTP_PROXY 
-export http_proxy=$HTTP_PROXY 
-export https_proxy=$HTTP_PROXY
-cat >~/.bashrc <<-EOF
-export HTTP_PROXY=$HTTP_PROXY
-export HTTPS_PROXY=$HTTP_PROXY
-export http_proxy=$HTTP_PROXY
-export https_proxy=$HTTP_PROXY
-EOF
-```
-
-###Vagrant (if you are running Docker on a VM)
-
-If you are running behind a corporate firewall/proxy comment out these lines in the Vagrantfile and set the proxy host and port. Open up atom or another text editor and modify the section that sets the proxy for the vm. Change the sample http://myproxy.net:80 as required.
-```
-# Global Proxy Settings
-export HTTP_PROXY=http://myproxy.net:80
-export HTTPS_PROXY=$HTTP_PROXY 
-export http_proxy=$HTTP_PROXY 
-export https_proxy=$HTTP_PROXY
-echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
-#global settings
-cat >/etc/profile.d/proxy.sh <<-EOF
-export HTTP_PROXY=$HTTP_PROXY
-export HTTPS_PROXY=$HTTP_PROXY
-export http_proxy=$HTTP_PROXY
-export https_proxy=$HTTP_PROXY
-EOF
-```
-
-###Docker Containers
-If you are running behind a corporate firewall/proxy then you need to provide the details of the proxy to the containers as many utilities to run the containers rely on access to the internet and require the proxy server to connect.
-
-You need to modify the setting in the docker/base set_proxy script
-```bash
-Peters-MacBook-Pro:apf peter$ tree docker/base/
-docker/base/
-├── Dockerfile
-├── docker_build.sh
-└── set_proxy.sh
-```
-open up the set_proxy.sh with atom or another text editor and modify the first entry http://myproxy.net:80 as required. This will set the container up to use the appropriate proxy to access the internet as required. 
-
-```
-#!/bin/sh
-
-# Global Proxy Settings
-export HTTP_PROXY=http://myproxy.net:80
-export HTTPS_PROXY=$HTTP_PROXY
-export http_proxy=$HTTP_PROXY
-export https_proxy=$HTTP_PROXY
-echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
-
-# GlobalSettings
-cat >/etc/profile.d/proxy.sh <<-EOF
-export HTTP_PROXY=$HTTP_PROXY
-export HTTPS_PROXY=$HTTP_PROXY
-export http_proxy=$HTTP_PROXY
-export https_proxy=$HTTP_PROXY
-EOF
-```
-
-###Steps
+###Project Setup Steps (once a Docker Machine is installed)
 #####Build the base images
-In the root directory there are a number of scripts to run to build the Docker images. These can be all built at once in the correct order by running the docker_build_all shell script from the apf/ directory.
+This project will use Docker to contain running instances of the software we need to complete the project, so Docker needs to be installed and working properly at this point. If not, go throug the PreRequisite Installation steps first. If you are behind a corporate firewall/proxy then you will have to make changes to the Docerfile located in ```apf/docker/base``` directory first as outlined in the Proxy Settings section. Once that is done then continue along here. In the root directory there are a number of scripts to run to build the Docker images. These can be all built at once in the correct order by running the docker_build_all shell script from the apf/ directory.
 ```bash
 $ ./docker_build_all.sh
 ```
 If the containers were built successfully you should see messages like the following:
 
-	the docker build for ./docker/db2express built successfully
+	the docker build for ./docker/* built successfully
 
-Check that the Docker images are built by typing the Docker command to list them:
+If you see error messages you will have to find out what went wrong and fix the errors before proceeding. If all looks good then check that the Docker images are built by typing the Docker command to list them:
 ```bash
 [vagrant@apfvm db2express]$ docker images
 REPOSITORY                      TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
@@ -320,3 +323,74 @@ Now if you save that Alias and drill down into the db2-sample-db/DB2INST1/TABLE/
 
 ![view customer table](img/view_customer_table.png)
 
+
+
+##Proxy Settings
+
+###Git Bash (if you are using windows)
+
+If you are running behind a corporate firewall/proxy enter these lines into a Git Bash shell. Change the sample http://myproxy.net:80 as required.
+
+```bash
+export HTTP_PROXY=http://myproxy.net:80
+export HTTPS_PROXY=$HTTP_PROXY 
+export http_proxy=$HTTP_PROXY 
+export https_proxy=$HTTP_PROXY
+cat >~/.bashrc <<-EOF
+export HTTP_PROXY=$HTTP_PROXY
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+EOF
+```
+
+###Vagrant (if you are running Docker on a VM)
+
+If you are running behind a corporate firewall/proxy comment out these lines in the Vagrantfile and set the proxy host and port. Open up atom or another text editor and modify the section that sets the proxy for the vm. Change the sample http://myproxy.net:80 as required.
+```
+# Global Proxy Settings
+export HTTP_PROXY=http://myproxy.net:80
+export HTTPS_PROXY=$HTTP_PROXY 
+export http_proxy=$HTTP_PROXY 
+export https_proxy=$HTTP_PROXY
+echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
+#global settings
+cat >/etc/profile.d/proxy.sh <<-EOF
+export HTTP_PROXY=$HTTP_PROXY
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+EOF
+```
+
+###Docker Containers
+If you are running behind a corporate firewall/proxy then you need to provide the details of the proxy to the containers as many utilities to run the containers rely on access to the internet and require the proxy server to connect.
+
+You need to modify the setting in the docker/base set_proxy script
+```bash
+Peters-MacBook-Pro:apf peter$ tree docker/base/
+docker/base/
+├── Dockerfile
+├── docker_build.sh
+└── set_proxy.sh
+```
+open up the set_proxy.sh with atom or another text editor and modify the first entry http://myproxy.net:80 as required. This will set the container up to use the appropriate proxy to access the internet as required. 
+
+```
+#!/bin/sh
+
+# Global Proxy Settings
+export HTTP_PROXY=http://myproxy.net:80
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
+
+# GlobalSettings
+cat >/etc/profile.d/proxy.sh <<-EOF
+export HTTP_PROXY=$HTTP_PROXY
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+EOF
+```
