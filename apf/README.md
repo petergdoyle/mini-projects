@@ -4,7 +4,7 @@
 
 ##PreRequisite Installation Requirements
 
-Since the project artifacts are based on Docker containers, i**t is required that your workstation have Docker installed.** 
+Since the project artifacts are based on Docker containers, i**t is required that your workstation have Docker installed.**
 #####Docker Installation on Linux (direct)
 If you are running a current distribution of Linux that supports docker then follow the instructions for your distribution. For convenience, if you are running CentOS version 7 you can run the following from a bash shell:
 ```bash
@@ -35,21 +35,25 @@ pip install -U docker-compose
 ```
 
 #####Docker Installation on Windows & Mac OSX (and Linux if you don't want to install Docker directly on your host Linux OS)
-You have a choice here to make. Since Docker-Machine installs a lightweight Virtualbox VM with Docker installed in that VM, you can either do that directly by following the instructions at the Docker website (https://docs.docker.com/machine/install-machine/) or you can install a more general purpose Virtualbox VM first and use Vagrant to provision that VM as a Docker-Machine with some additional feature. 
+You have a choice here to make. Since Docker-Machine installs a lightweight Virtualbox VM with Docker installed in that VM, you can either do that directly by following the instructions at the Docker website (https://docs.docker.com/machine/install-machine/) or you can install a more general purpose Virtualbox VM first and use Vagrant to provision that VM as a Docker-Machine with some additional feature.
 
-**Option 1:** For the official Docker-Machine installation, follow instructions here https://docs.docker.com/machine/install-machine/ 
+**Option 1:** For the official Docker-Machine installation, follow instructions here https://docs.docker.com/machine/install-machine/
 
 **Option 2**: For the more general-purpose VM and control using Vagrant, first follow the installation instructions and links outlined here (https://github.com/petergdoyle/dockerdemo/blob/master/SETUP.md) and install Vagrant and Virtualbox now.
 
 
 - [ ] If you are on Windows it is highly recommended that you install Git for Windows and a modern text/code editor like Atom. Those installation instructions and links are outlined at (https://github.com/petergdoyle/dockerdemo/blob/master/SETUP.md) as well.
-- [ ] If you behind a corporate firewall/proxy then scroll down in this document and read the section on **Proxy Settings** first, make the necessary environment changes first, before you go to the next step (here) after you confirm your bash shell (git bash or otherwise) can connect to the internet. Open a bash shell (git bash for windows, a command shell in OSX or Linux) and run ```curl -i http://www.google.com``` to test that the proxy settings are working. You should get some type of HTTP response code back from google. If you don't then you are going to have to stop here and figure out why not. 
+- [ ] ***please*** be aware the source code on git has been created and checked in using Linux and is intended to be executed in Linux. Normally Git Bash will (in)conveniently convert incoming source code to the platform specific newline character **BUT** for this project, please check the 2nd box off during Git Bash installation to make sure no conversion is done on the source code:
+![git crlf option box image](img/git_bash_crlf_option.png)
+
+For more details check here https://help.github.com/articles/dealing-with-line-endings/
+- [ ] If you behind a corporate firewall/proxy then scroll down in this document and read the section on **Proxy Settings** first, make the necessary environment changes first, before you go to the next step (here) after you confirm your bash shell (git bash or otherwise) can connect to the internet. Open a bash shell (git bash for windows, a command shell in OSX or Linux) and run ```curl -i http://www.google.com``` to test that the proxy settings are working. You should get some type of HTTP response code back from google. If you don't then you are going to have to stop here and figure out why not.
 - [ ] Once Vagrant is installed you need to add a plugin to vagrant that will keep the Virtualbox extensions up to date everytime you create a new Virtualbox VM using vagrant. So with the same bash shell type ```vagrant plugin install vagrant-vbguest```. For more information on that plugin, refer to the project documentation https://github.com/dotless-de/vagrant-vbguest
 - [ ] Clone the mini-projects repository using that same bash shell by issuing the git command to pull a copy of this repository down to your machine ```git clone https://github.com/petergdoyle/mini-projects.git``` and change to the apf directory ```cd mini-projects/apf``` (the contents of the apf directory is shown in the next section **Project Overview**)
-- [ ] If you are behind a corporate firewall/proxy make changes to the Vagrantfile section commented out specifying proxy settings before proceeding. Scroll ahead the section in this document on Proxy Settings and make the appproprate changes in the Vagrantfile. Feel free to use Atom to do that work launching the program and opening the folder where mini-projects/apf is located. That will alow you to make the changes. 
-- [ ] Now you should be able to create the Docker-based VM. So with the same bash shell issue the vagrant command to create a new VM that we will use for this project. Type ```vagrant up``` now and you should see the machine being created from a base image and then provisioned with the necessary tools and software for our purposes here. 
+- [ ] If you are behind a corporate firewall/proxy make changes to the Vagrantfile section commented out specifying proxy settings before proceeding. Scroll ahead the section in this document on Proxy Settings and make the appproprate changes in the Vagrantfile. Feel free to use Atom to do that work launching the program and opening the folder where mini-projects/apf is located. That will alow you to make the changes.
+- [ ] Now you should be able to create the Docker-based VM. So with the same bash shell issue the vagrant command to create a new VM that we will use for this project. Type ```vagrant up``` now and you should see the machine being created from a base image and then provisioned with the necessary tools and software for our purposes here.
 - [ ] You should have received some type of success message from Vagrant that the VM got set up successfully. If not, it is likely the Proxy Settings. Recheck all that and type ```vagrant provision``` and that should restart the section of instructions in the Vagrantfile that will install the Docker-machine and other utilities and software required to continue.
-- [ ] Once you have a successfully install VM, then restart it. Type the command ```vagrant halt && vagrant up``` to do that. You may see some additional installation steps running to update the Virtualbox Guest Extensions, etc. 
+- [ ] Once you have a successfully install VM, then restart it. Type the command ```vagrant halt && vagrant up``` to do that. You may see some additional installation steps running to update the Virtualbox Guest Extensions, etc.
 - [ ] Okay now you should be able to ssh into your VM. Type the command ```vagrant ssh``` and you should find yourself at the bash shell of the VM and see the vagrant user at the apfvm machine
 ```bash
 [vagrant@apfvm ~]$
@@ -269,11 +273,11 @@ connection to sample db2 database [jdbc:db2://localhost:50000/sample] successful
 ####Squirrel SQL
 
 #####Install Squirrel SQL
-http://squirrel-sql.sourceforge.net/#installation 
+http://squirrel-sql.sourceforge.net/#installation
 
 #####Configure Squirrel SQL
 
-When you setup the Driver you will need to provide the db2 jdbc drivers. I created a script to download and store them in the ```ibm/drivers``` folder. You need to point to these when the next step wants you to "add the two jar files" for the db2 driver configuration. 
+When you setup the Driver you will need to provide the db2 jdbc drivers. I created a script to download and store them in the ```ibm/drivers``` folder. You need to point to these when the next step wants you to "add the two jar files" for the db2 driver configuration.
 
 ```bash
 [vagrant@apfvm vagrant]$ cd ibm
@@ -282,7 +286,7 @@ total 8
 drwxr-xr-x. 1 vagrant vagrant 136 Mar  8 10:32 drivers
 -rwxr-xr-x. 1 vagrant vagrant 777 Mar  8 09:40 mvn_install_db2-express-c_jdbc_drivers.sh
 -rwxr-xr-x. 1 vagrant vagrant  57 Mar  8 09:39 mvn_remove_db2-express-c_jdbc_drivers.sh
-[vagrant@apfvm ibm]$ ./mvn_install_db2-express-c_jdbc_drivers.sh 
+[vagrant@apfvm ibm]$ ./mvn_install_db2-express-c_jdbc_drivers.sh
 ...
 [vagrant@apfvm ibm]$ ll drivers
 total 7348
@@ -332,35 +336,50 @@ Now if you save that Alias and drill down into the db2-sample-db/DB2INST1/TABLE/
 If you are running behind a corporate firewall/proxy enter these lines into a Git Bash shell. Change the sample http://myproxy.net:80 as required.
 
 ```bash
-export HTTP_PROXY=http://myproxy.net:80
-export HTTPS_PROXY=$HTTP_PROXY 
-export http_proxy=$HTTP_PROXY 
-export https_proxy=$HTTP_PROXY
-cat >~/.bashrc <<-EOF
-export HTTP_PROXY=$HTTP_PROXY
+# Proxy Env Settings
+export PROXY_HOST=http://myproxy.net
+export PROXY_PORT=8080
+export HTTP_PROXY=$PROXY_HOST:$PROXY_PORT
 export HTTPS_PROXY=$HTTP_PROXY
 export http_proxy=$HTTP_PROXY
 export https_proxy=$HTTP_PROXY
-EOF
-```
 
-###Vagrant (if you are running Docker on a VM)
-
-If you are running behind a corporate firewall/proxy comment out these lines in the Vagrantfile and set the proxy host and port. Open up atom or another text editor and modify the section that sets the proxy for the vm. Change the sample http://myproxy.net:80 as required.
-```
-# Global Proxy Settings
-export HTTP_PROXY=http://myproxy.net:80
-export HTTPS_PROXY=$HTTP_PROXY 
-export http_proxy=$HTTP_PROXY 
-export https_proxy=$HTTP_PROXY
+# Individual Settings
 echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
-#global settings
+
+# Global Env settings
 cat >/etc/profile.d/proxy.sh <<-EOF
 export HTTP_PROXY=$HTTP_PROXY
 export HTTPS_PROXY=$HTTP_PROXY
 export http_proxy=$HTTP_PROXY
 export https_proxy=$HTTP_PROXY
 EOF
+
+```
+
+###Vagrant (if you are running Docker on a VM)
+
+If you are running behind a corporate firewall/proxy comment out these lines in the Vagrantfile and set the proxy host and port. Open up atom or another text editor and modify the section that sets the proxy for the vm. Change the sample http://myproxy.net:80 as required.
+```
+# Proxy Env Settings
+export PROXY_HOST=http://myproxy.net
+export PROXY_PORT=8080
+export HTTP_PROXY=$PROXY_HOST:$PROXY_PORT
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+
+# Individual Settings
+echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
+
+# Global Env settings
+cat >/etc/profile.d/proxy.sh <<-EOF
+export HTTP_PROXY=$HTTP_PROXY
+export HTTPS_PROXY=$HTTP_PROXY
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+EOF
+
 ```
 
 ###Docker Containers
@@ -374,23 +393,28 @@ docker/base/
 ├── docker_build.sh
 └── set_proxy.sh
 ```
-open up the set_proxy.sh with atom or another text editor and modify the first entry http://myproxy.net:80 as required. This will set the container up to use the appropriate proxy to access the internet as required. 
+open up the set_proxy.sh with atom or another text editor and modify the first entry http://myproxy.net:80 as required. This will set the container up to use the appropriate proxy to access the internet as required.
 
 ```
 #!/bin/sh
 
-# Global Proxy Settings
-export HTTP_PROXY=http://myproxy.net:80
+# Proxy Env Settings
+export PROXY_HOST=http://myproxy.net
+export PROXY_PORT=8080
+export HTTP_PROXY=$PROXY_HOST:$PROXY_PORT
 export HTTPS_PROXY=$HTTP_PROXY
 export http_proxy=$HTTP_PROXY
 export https_proxy=$HTTP_PROXY
+
+# Individual Settings
 echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
 
-# GlobalSettings
+# Global Env settings
 cat >/etc/profile.d/proxy.sh <<-EOF
 export HTTP_PROXY=$HTTP_PROXY
 export HTTPS_PROXY=$HTTP_PROXY
 export http_proxy=$HTTP_PROXY
 export https_proxy=$HTTP_PROXY
 EOF
+
 ```
