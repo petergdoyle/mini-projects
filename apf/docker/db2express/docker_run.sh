@@ -4,7 +4,7 @@ daemon_mode='-d'
 temp_mode='--rm'
 docker_run_mode="$daemon_mode"
 
-db2inst1_pwd="magic_mike"
+db2inst1_pwd="db2inst1"
 db2start_cmd="db2start"
 default_cmd="/bin/bash"
 

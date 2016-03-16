@@ -9,6 +9,7 @@ FROM ibmcom/db2express-c
 RUN yum -y install vim bash-completion tree git curl wget telnet net-tools
 
 COPY entrypoint.sh /entrypoint.sh
+COPY scripts/ /scripts
 
 RUN chmod +x *sh
 
