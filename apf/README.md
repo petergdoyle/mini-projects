@@ -316,7 +316,7 @@ Now you should be able to connect using the gui based Squirrel SQL
 So after you configure the Driver, then add an Alias and connect to the container-ized db2 instance.
 ![add alias](img/add_alias.png)
 
-Then test that with the test button the username/password we set (in the create_db script) is db2inst1/magic_mike, so try that out and you should see a success icon pop up
+Then test that with the test button the username/password we set (in the create_db script) is db2inst1/db2inst1, so try that out and you should see a success icon pop up
 ![test alias](img/test_alias.png)
 
 
