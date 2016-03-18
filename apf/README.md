@@ -344,12 +344,9 @@ export HTTPS_PROXY=$HTTP_PROXY
 export http_proxy=$HTTP_PROXY
 export https_proxy=$HTTP_PROXY
 
-# Individual Settings
-echo "proxy=$HTTP_PROXY" >> /etc/yum.conf
-
 # Global Env settings
-cat >/etc/profile.d/proxy.sh <<-EOF
-export HTTP_PROXY=$HTTP_PROXY
+cat >~/.bashrc <<-EOF
+export HTTP_PROXY=$PROXY_HOST:$PROXY_PORT
 export HTTPS_PROXY=$HTTP_PROXY
 export http_proxy=$HTTP_PROXY
 export https_proxy=$HTTP_PROXY
