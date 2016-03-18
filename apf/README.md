@@ -382,7 +382,8 @@ EOF
 ###Docker Containers
 If you are running behind a corporate firewall/proxy then you need to provide the details of the proxy to the containers as many utilities to run the containers rely on access to the internet and require the proxy server to connect.
 
-You need to modify the setting in the docker/base set_proxy script
+You need to modify the settings in the docker/base and docker/db2express et_proxy.sh scripts AND you need to uncomment out the instructions in the Dockerfile for both docker/base and docker/db2express
+
 ```bash
 Peters-MacBook-Pro:apf peter$ tree docker/base/
 docker/base/
@@ -390,7 +391,7 @@ docker/base/
 ├── docker_build.sh
 └── set_proxy.sh
 ```
-open up the set_proxy.sh with atom or another text editor and modify the first entry http://myproxy.net:80 as required. This will set the container up to use the appropriate proxy to access the internet as required.
+**First** open up the set_proxy.sh for both the one in docker/base and docker/db2express with atom or another text editor and modify the first entry http://myproxy.net:80 as required. This will set the container up to use the appropriate proxy to access the internet as required.
 
 ```
 #!/bin/sh
@@ -414,4 +415,9 @@ export http_proxy=$HTTP_PROXY
 export https_proxy=$HTTP_PROXY
 EOF
 
+```
+**Next** open up the Dockerfile for the one you find in docker/base and docker/db2express and find the lines that COPY and RUN the set_proxy.sh scripts and and uncomment them
+```bash
+COPY set_proxy.sh /set_proxy.sh
+RUN ./set_proxy.sh
 ```
