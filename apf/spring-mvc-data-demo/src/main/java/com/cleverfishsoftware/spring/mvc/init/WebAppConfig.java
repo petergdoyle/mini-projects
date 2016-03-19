@@ -24,9 +24,9 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
-@ComponentScan("com.spr")
+@ComponentScan("com.cleverfishsoftware.spring")
 @PropertySource("classpath:application.properties")
-@EnableJpaRepositories("com.spr.repository")
+@EnableJpaRepositories("com.cleverfishsoftware.spring.data.repository")
 public class WebAppConfig {
 
     private static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";

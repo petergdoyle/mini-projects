@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="javabeat.net_spring-boot-mvc-data-demo_jar_1.0-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>com.cleverfishsoftware.data.entities.Inventory</class>
+    <class>com.cleverfishsoftware.data.entities.Product</class>
+    <class>com.cleverfishsoftware.data.entities.Vempprojact</class>
+    <class>com.cleverfishsoftware.data.entities.Vact</class>
+    <class>com.cleverfishsoftware.data.entities.Vempdpt1</class>
+    <class>com.cleverfishsoftware.data.entities.Vemplp</class>
+    <class>com.cleverfishsoftware.data.entities.Vstafac1</class>
+    <class>com.cleverfishsoftware.data.entities.Act</class>
+    <class>com.cleverfishsoftware.data.entities.Vproj</class>
+    <class>com.cleverfishsoftware.data.entities.Vstafac2</class>
+    <class>com.cleverfishsoftware.data.entities.Vphone</class>
+    <class>com.cleverfishsoftware.data.entities.Vdepmg1</class>
+    <class>com.cleverfishsoftware.data.entities.Vemp</class>
+    <class>com.cleverfishsoftware.data.entities.Vdept</class>
+    <class>com.cleverfishsoftware.data.entities.Vastrde2</class>
+    <class>com.cleverfishsoftware.data.entities.Catalog</class>
+    <class>com.cleverfishsoftware.data.entities.Customer</class>
+    <class>com.cleverfishsoftware.data.entities.Vprojre1</class>
+    <class>com.cleverfishsoftware.data.entities.Productsupplier</class>
+    <class>com.cleverfishsoftware.data.entities.Vforpla</class>
+    <class>com.cleverfishsoftware.data.entities.Vpstrde2</class>
+    <class>com.cleverfishsoftware.data.entities.Vastrde1</class>
+    <class>com.cleverfishsoftware.data.entities.Vprojact</class>
+    <class>com.cleverfishsoftware.data.entities.Suppliers</class>
+    <class>com.cleverfishsoftware.data.entities.Vpstrde1</class>
+    <class>com.cleverfishsoftware.data.entities.Vhdept</class>
+    <class>com.cleverfishsoftware.data.entities.Purchaseorder</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:db2://localhost:50000/sample"/>
+      <property name="javax.persistence.jdbc.user" value="db2inst1"/>
+      <property name="javax.persistence.jdbc.driver" value="com.ibm.db2.jcc.DB2Driver"/>
+      <property name="javax.persistence.jdbc.password" value="db2inst1"/>
+    </properties>
+  </persistence-unit>
+</persistence>
