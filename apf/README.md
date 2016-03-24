@@ -44,9 +44,17 @@ You have a choice here to make. Since Docker-Machine installs a lightweight Virt
 
 - [ ] If you are on Windows it is highly recommended that you install Git for Windows and a modern text/code editor like Atom. Those installation instructions and links are outlined at (https://github.com/petergdoyle/dockerdemo/blob/master/SETUP.md) as well.
 - [ ] ***please*** be aware the source code on git has been created and checked in using Linux and is intended to be executed in Linux. Normally Git Bash will (in)conveniently convert incoming source code to the platform specific newline character **BUT** for this project, please check the 2nd box off during Git Bash installation to make sure no conversion is done on the source code:
-![git crlf option box image](img/git_bash_crlf_option.png)
-
+![git crlf option box image](img/git_bash_crlf_option.png) 
 For more details check here https://help.github.com/articles/dealing-with-line-endings/
+- [ ]To ensure things are configured properly check the settings
+```
+$ git config --global core.autocrlf 
+```
+you need to make sure it is set to false. if not, then run the command explcitly 
+```
+$ git config --global core.autocrlf false
+```
+
 - [ ] If you behind a corporate firewall/proxy then scroll down in this document and read the section on **Proxy Settings** first, make the necessary environment changes first, before you go to the next step (here) after you confirm your bash shell (git bash or otherwise) can connect to the internet. Open a bash shell (git bash for windows, a command shell in OSX or Linux) and run ```curl -i http://www.google.com``` to test that the proxy settings are working. You should get some type of HTTP response code back from google. If you don't then you are going to have to stop here and figure out why not.
 - [ ] Once Vagrant is installed you need to add a plugin to vagrant that will keep the Virtualbox extensions up to date everytime you create a new Virtualbox VM using vagrant. So with the same bash shell type ```vagrant plugin install vagrant-vbguest```. For more information on that plugin, refer to the project documentation https://github.com/dotless-de/vagrant-vbguest
 - [ ] Clone the mini-projects repository using that same bash shell by issuing the git command to pull a copy of this repository down to your machine ```git clone https://github.com/petergdoyle/mini-projects.git``` and change to the apf directory ```cd mini-projects/apf``` (the contents of the apf directory is shown in the next section **Project Overview**)
@@ -357,6 +365,8 @@ EOF
 
 ```
 
+
+
 ###Vagrant (if you are running Docker on a VM)
 
 If you are running behind a corporate firewall/proxy comment out these lines in the Vagrantfile and set the proxy host and port. Open up atom or another text editor and modify the section that sets the proxy for the vm. Change the sample http://myproxy.net:80 as required.
@@ -384,16 +394,19 @@ EOF
 
 ###Docker Containers
 If you are running behind a corporate firewall/proxy then you need to provide the details of the proxy to the containers as many utilities to run the containers rely on access to the internet and require the proxy server to connect.
-
-You need to modify the setting in the docker/base set_proxy script
+Before you build the Docker images, you need to modify the settings in **BOTH** the docker/base set_proxy.sh script as well as the Dockerfile **AND**  the set_proxy.sh and Dockerfile under docker/db2espress 
 ```bash
 Peters-MacBook-Pro:apf peter$ tree docker/base/
 docker/base/
 ├── Dockerfile
-├── docker_build.sh
+└── set_proxy.sh
+Peters-MacBook-Pro:apf peter$ tree docker/dbexpress/
+docker/dbexpress/
+├── ...
+├── Dockerfile
 └── set_proxy.sh
 ```
-open up the set_proxy.sh with atom or another text editor and modify the first entry http://myproxy.net:80 as required. This will set the container up to use the appropriate proxy to access the internet as required.
+Open up the set_proxy.sh with atom or another text editor and modify the first entry http://myproxy.net:80 as required. This will set the container up to use the appropriate proxy to access the internet as required.
 
 ```
 #!/bin/sh
@@ -416,5 +429,59 @@ export HTTPS_PROXY=$HTTP_PROXY
 export http_proxy=$HTTP_PROXY
 export https_proxy=$HTTP_PROXY
 EOF
+
+```
+Now open up the Dockerfile and comment out the lines that copy and run the ``set_proxy`` script
+```ruby
+FROM centos:7
+
+#
+# set the proxy if required
+#
+COPY set_proxy.sh /set_proxy.sh
+RUN ./set_proxy.sh
+
+#
+```
+
+###Curl Commands in Dockerfiles
+For whatever reason the curl command run by the Docker machine when building images does not pick up the Proxy Settings from the vm. So you need to modify the curl commands in any Dockerfile that runs that command (that pulls archives from the internet. To do this run a grep command first to see where those files are.
+```bash
+Peters-MacBook-Pro:apf peter$ grep -r 'RUN curl' *
+docker/jdk8/Dockerfile:RUN curl -O -L --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-x64.tar.gz"
+docker/jenkins/Dockerfile:RUN curl -O http://pkg.jenkins-ci.org/redhat/jenkins-1.651-1.1.noarch.rpm \
+docker/tomcat8/Dockerfile:RUN curl -L -O http://mirror.olnevhost.net/pub/apache/tomcat/tomcat-8/v8.0.32/bin/apache-tomcat-8.0.32.tar.gz \
+```
+Then with Atom or another text editor (you can do a search the same as grep with the Find In Projects menu item) and add the -x paramater information to the curl commands providing the appropriate proxy server url and port. 
+```
+RUN curl -L -O http://mirror....
+becomes
+RUN curl -x http://myproxy.net:8080 -L -O http://mirror....
+```
+
+###Maven (on the vm)
+Since your vm is really your build server it need to have Java and Maven installed. Those have already been installed when we provisioned your Vagrant machine but you need to tell Maven about the proxy setting as well. This is done in the ``/usr/maven/default/conf/settings.xml``. You need to uncomment out and define your proxy settings here. Because we never provided the vm with an x-windows server, you will have to use the vi (vim) command as sudo to open up the file and edit it.
+
+```bash
+$ sudo vim /usr/maven/default/conf/settings.xml
+```
+And then scroll down and make the changes.
+```html
+<proxies>
+    <!-- proxy
+     | Specification for one proxy, to be used in connecting to the network.
+     |
+    <proxy>
+      <id>optional</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <username>proxyuser</username>
+      <password>proxypass</password>
+      <host>proxy.host.net</host>
+      <port>80</port>
+      <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
+    </proxy>
+    -->
+  </proxies>
 
 ```
