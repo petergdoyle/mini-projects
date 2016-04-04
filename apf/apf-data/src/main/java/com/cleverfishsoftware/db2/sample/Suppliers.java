@@ -1,6 +1,6 @@
 /*
  */
-package com.cleverfishsoftware.apf.data;
+package com.cleverfishsoftware.db2.sample;
 
 import java.io.Serializable;
 import javax.persistence.Basic;

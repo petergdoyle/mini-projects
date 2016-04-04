@@ -1,7 +1,7 @@
 package com.cleverfishsoftware;
 
-import com.cleverfishsoftware.apf.data.Suppliers;
-import com.cleverfishsoftware.apf.data.SuppliersRepository;
+import com.cleverfishsoftware.db2.sample.Suppliers;
+import com.cleverfishsoftware.db2.sample.SuppliersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -21,14 +21,14 @@ public class ApfDataApplication {
     @Bean
     public CommandLineRunner demo(SuppliersRepository repository) {
         return (args) -> {
-            // save a couple of customers
+            // save a couple of Suppliers
             repository.save(new Suppliers("A"));
             repository.save(new Suppliers("B"));
             repository.save(new Suppliers("C"));
             repository.save(new Suppliers("D"));
             repository.save(new Suppliers("E"));
 
-            // fetch all customers
+            // fetch all Suppliers
             log.info("Suppliers found with findAll():");
             log.info("-------------------------------");
             repository.findAll().stream().forEach((s) -> {
@@ -36,6 +36,7 @@ public class ApfDataApplication {
             });
             log.info("");
 
+            // fetch a Suppliers
             Suppliers s = repository.findOne("A");
             log.info("Supplier found with findOne(\"A\")");
             log.info("--------------------------------");
