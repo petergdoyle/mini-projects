@@ -14,7 +14,7 @@ import java.util.Properties;
 public class Connect {
 
     public static void main(String... args) {
-        String databaseURL = null;
+        String databaseURL;
         if (args.length > 0) {
             databaseURL = args[0];
         } else {
@@ -29,7 +29,7 @@ public class Connect {
         // Set user and password properties
         Properties properties = new Properties();
         properties.put("user", "db2inst1");
-        properties.put("password", "magic_mike");
+        properties.put("password", "db2inst1");
         properties.put("retreiveMessagesFromServerOnGetMessage", "true");
         // Get a connection
         Connection conn;
