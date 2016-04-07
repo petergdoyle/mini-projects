@@ -17,7 +17,7 @@ import javax.persistence.Table;
  * @author peter
  */
 @Entity
-@Table(name="Suppliers"/*,catalog = "", schema = "DB2INST1"*/)
+//@Table(name="Suppliers"/*,catalog = "", schema = "DB2INST1"*/)
 @NamedQueries({
     @NamedQuery(name = "Suppliers.findAll", query = "SELECT s FROM Suppliers s"),
     @NamedQuery(name = "Suppliers.findBySid", query = "SELECT s FROM Suppliers s WHERE s.sid = :sid")})
@@ -28,8 +28,8 @@ public class Suppliers implements Serializable {
     @Basic(optional = false)
     @Column(nullable = false, length = 10)
     private String sid;
-    @Lob
-    private Object addr;
+    //@Lob
+    private String addr;
 
     public Suppliers() {
     }
@@ -46,11 +46,11 @@ public class Suppliers implements Serializable {
         this.sid = sid;
     }
 
-    public Object getAddr() {
+    public String getAddr() {
         return addr;
     }
 
-    public void setAddr(Object addr) {
+    public void setAddr(String addr) {
         this.addr = addr;
     }
 
